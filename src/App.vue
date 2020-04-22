@@ -6,8 +6,14 @@
 </template>
 
 <script>
+// import { namesRefRdv } from './config/firebase'
+// console.log(namesRefRdv)
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {
+    }
+  }
 }
 </script>
 

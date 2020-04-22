@@ -5,7 +5,7 @@
     <ul>
       <li>
         <router-link
-          to = "/test"
+          to = "/AgendaCHU"
         >
           CHU de Charleroi
         </router-link>
