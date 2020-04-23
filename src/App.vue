@@ -3,11 +3,11 @@
     <!-- <img src="./assets/logo.png"> -->
     <router-view/>
   </div>
+
 </template>
 
 <script>
-// import { namesRefRdv } from './config/firebase'
-// console.log(namesRefRdv)
+
 export default {
   name: 'App',
   data () {
@@ -15,6 +15,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style>
