@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <table>
         <thead>
           <tr>
@@ -10,17 +11,11 @@
         </thead>
         <tbody>
           <tr v-for='entry in rdvList' :key='entry.id'>
-            <td v-for='key in keyList' :key='key.id'>
-            </td>
-            <td>
-              {{entry['heure']}}
-               {{patienList[entry['patien']]}}
-            </td>
             <td>
               {{entry['heure']}}
             </td>
             <td>
-              {{patienList[entry['patien']]['Nom']}}.', '.{{patienList[entry['patien']]['Prenom']}} <span></span> <span></span> <span></span><span v-if="entry['urgent']==='y'">URGENT</span>
+              {{patienList[entry['patien']]['Nom']}}, {{patienList[entry['patien']]['Prenom']}} <span></span> <span></span> <span></span><span v-if="entry['urgent']==='y'">URGENT</span>
             </td>
             <td>
               <span v-if="patienList[entry['patien']]['Sexe']==='M'">M</span><span v-if="patienList[entry['patien']]['Sexe']==='F'">F</span>
@@ -35,12 +30,25 @@
               {{patienList[entry['patien']]['Poids']}} kg
             </td>
             <td>
-              {{patienList[entry['patien']]['Taille']}} cm
+              {{patienList[entry['patien']]['Taille']}}
+            </td>
+            <td>
+              IBM
+              {{patienList[entry['patien']]['Taille']*patienList[entry['patien']]['Taille']}}
+            </td>
+            <td>
+              {{entry['examen']}}
+            </td>
+            <td>
+              {{patienList[entry['patien']]['Niss']}}
+            </td>
+            <td>
+              {{patienList[entry['patien']]['Telephone']}}
             </td>
           </tr>
         </tbody>
       </table>
-    <div >{{rdvList[0]}}</div>
+
   </div>
 </template>
 
