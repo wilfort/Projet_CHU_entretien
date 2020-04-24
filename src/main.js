@@ -3,6 +3,7 @@
 import './config/firebase'
 import './config/vuefire'
 import './config/vuesax'
+import './config/bootstrapVue'
 import Vue from 'vue'
 import App from './App'
 import router from './router'

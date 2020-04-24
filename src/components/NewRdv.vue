@@ -1,5 +1,5 @@
 <template>
-  <div><i class="bx bxs-phone-call"></i>
+  <div>
     <form action="">
       <div>
         Est-il un nouveau patient ? :
@@ -40,11 +40,15 @@
         <div>Prénom : <input type="text" v-model="newPatient['Prenom']"></div>
         <div>Sexe : <input type="text" v-model="newPatient['Sexe']"></div>
         <div>Date de naissance : <input type="date" v-model="newPatient['DateN']"></div>
-        <div>Diabéte : <input type="text" v-model="newPatient['Diabete']"></div>
+        <div>Diabéte : <select v-model="newPatient['Diabete']">
+            <option value="n"></option>
+            <option value="Type I">type 1</option>
+            <option value="Type II">type 2</option>
+          </select></div>
         <div>Poids : <input type="number" v-model="newPatient['Poids']"> kg</div>
         <div>Taille : <input type="number" v-model="newPatient['Taille']"> cm</div>
         <div>Niss : <input type="text" v-model="newPatient['Niss']"></div>
-        <div>Téléphonr : <input type="tel" v-model="newPatient['Telephone']"></div>
+        <div>Téléphone : <input type="tel" v-model="newPatient['Telephone']"></div>
       </div>
       <button v-on:click="addRdvList()">Nouveau RDV</button>
     </form>
@@ -107,10 +111,12 @@ export default {
         'heure': '',
         'hopital': '',
         'patient': '',
-        'urgent': 'n'},
+        'urgent': 'n',
+        'annule': false
+      },
       newPatient: {
         'DateN': '',
-        'Diabete': '',
+        'Diabete': 'n',
         'Niss': '',
         'Nom': '',
         'Prenom': '',
@@ -140,16 +146,25 @@ export default {
     addRdvList: function () {
       let dateR = new Date(this.newRdv['date'])
       let mdateR = dateR.toLocaleDateString()
+      this.newRdv.date = mdateR
       mdateR = mdateR.replace(/\//gi, '')
       let heureR = this.newRdv['heure']
       heureR = heureR.replace(':', '')
       let chid = '' + this.newRdv['hopital'] + '' + mdateR + '' + heureR
       console.log(this.newRdv)
+      if (this.checkPatient === 'oui') {
+        let dateP = new Date(this.newPatient.DateN)
+        this.newPatient.DateN = dateP.toLocaleDateString()
+        this.newPatient.id = this.patientList.length
+        this.addPatientList()
+        this.newRdv.patient = this.newPatient.id
+      }
+      this.newRdv.id = chid
       this.$firebaseRefs.rdvList.child(chid).set(this.newRdv)
       this.popupActive = !this.popupActive
     },
     addPatientList: function () {
-      this.$firebaseRefs.patientList.push(this.newPatient)
+      this.$firebaseRefs.patientList.child(this.patientList.length).set(this.newPatient)
     }
   }
 }

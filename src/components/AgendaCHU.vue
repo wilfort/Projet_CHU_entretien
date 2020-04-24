@@ -1,65 +1,127 @@
 <template>
-  <div>
-    <div>
-      Rendez-vous du {{semaine[dateJ.getDay()]}} {{dateJ.toLocaleDateString()}}
-      <router-link
+  <div id="agendaChu">
+    <div class="center grid">
+      <vs-row>
+        <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="6">
+          Rendez-vous du {{semaine[dateJ.getDay()]}} {{dateJ.toLocaleDateString()}}
+        </vs-col>
+        <vs-col vs-type="flex" vs-justify="center" vs-align="center" w="6">
+          <router-link
           to = "/NewRdv"
         >
           Prendre un rendez-vous
         </router-link>
-    </div>
-    <table>
-        <thead>
-          <tr>
-            <th v-for='key in keyList' :key='key.id'>
-              {{key}}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for='entry in rdvList' :key='entry.id'>
-            <td>
+        </vs-col>
+      </vs-row>
+      <vs-row>
+        <vs-row>
+          <vs-col w="3">
+            <vs-col w="2">
+              RDV
+            </vs-col>
+            <vs-col w="8">
+              Nom, prénom
+            </vs-col>
+            <vs-col w="2">
+              Sexe
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="7">
+              Date de naissance
+            </vs-col>
+            <vs-col w="3">
+              Diabète
+            </vs-col>
+            <vs-col w="2">
+              Poids
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="3">
+              Taille
+            </vs-col>
+            <vs-col w="4">
+              IBM
+            </vs-col>
+            <vs-col w="5">
+              Examen
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="5">
+              NISS
+            </vs-col>
+            <vs-col w="5">
+              Téléphane
+            </vs-col>
+            <vs-col w="2">
+             <i class="far fa-edit"></i>
+            </vs-col>
+          </vs-col>
+        </vs-row>
+        <vs-row v-for='entry in rdvList' :key='entry.id'>
+          <vs-col w="3">
+            <vs-col w="2">
               {{entry['heure']}}
-            </td>
-            <td>
-              {{patientList[entry['patient']]['Nom']}}, {{patientList[entry['patient']]['Prenom']}} <span></span> <span></span> <span></span><span v-if="entry['urgent']==='y'">URGENT</span>
-            </td>
-            <td>
+            </vs-col>
+            <vs-col w="8">
+              {{patientList[entry['patient']]['Nom']}}, {{patientList[entry['patient']]['Prenom']}} <span class="colorH"><i class="fas fa-x-ray"></i></span> <span class="colorH"><i class="fas fa-biohazard"></i></span> <span class="colorH"><i class="fas fa-brain"></i></span> <b-badge v-if="entry['urgent']=='y'" pill variant="colorU">URGENT</b-badge>
+            </vs-col>
+            <vs-col w="2">
               <span v-if="patientList[entry['patient']]['Sexe']==='M'">M</span><span v-if="patientList[entry['patient']]['Sexe']==='F'">F</span>
-            </td>
-            <td>
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="7">
               {{patientList[entry['patient']]['DateN']}}
-            </td>
-            <td>
-              <span v-if="patientList[entry['patient']]['Diabete']==!'n'">{{patientList[entry['patient']]['Diabete']}}</span>
-            </td>
-            <td>
+            </vs-col>
+            <vs-col w="3">
+              <span v-if="patientList[entry['patient']]['Diabete']!='n'"><b-badge variant="colorH">{{patientList[entry['patient']]['Diabete']}}</b-badge></span>
+            </vs-col>
+            <vs-col  v-if="patientList[entry['patient']]['Diabete']=='n'" offset=3 w="2">
               {{patientList[entry['patient']]['Poids']}} kg
-            </td>
-            <td>
-              {{patientList[entry['patient']]['Taille']}}
-            </td>
-            <td>
+            </vs-col>
+            <vs-col v-if="patientList[entry['patient']]['Diabete']!='n'" w="2">
+              {{patientList[entry['patient']]['Poids']}} kg
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="3">
+              {{patientList[entry['patient']]['Taille']}} cm
+            </vs-col>
+            <vs-col w="4">
               <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))==0">?</span>
-              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>0&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<18.5">Poids insuffisant</span>
+              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>0&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<18.5"><b-badge pill variant="colorH">Poids insuffisant</b-badge></span>
               <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=18.5&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<25">Poids normal</span>
-              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=25&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<30">Excès pondéral, surpoids</span>
-              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=30&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<40">Obésité</span>
+              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=25&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<30"><b-badge pill variant="colorH">Excès pondéral, surpoids</b-badge></span>
+              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=30&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<40"><b-badge pill variant="colorH">Obésité</b-badge></span>
               <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=40">Obésité morbide</span>
-            </td>
-            <td>
+            </vs-col>
+            <vs-col w="5">
               {{entry['examen']}}
-            </td>
-            <td>
+            </vs-col>
+          </vs-col>
+          <vs-col w="3">
+            <vs-col w="5">
               {{patientList[entry['patient']]['Niss']}}
-            </td>
-            <td>
+            </vs-col>
+            <vs-col w="5">
               {{patientList[entry['patient']]['Telephone']}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+            </vs-col>
+            <vs-col w="2">
+              <vs-button
+        only-arrows
+        icon
+        color="rgb(0,222,0)"
+      >
+        <i class="far fa-edit"></i>
+      </vs-button>
+            </vs-col>
+          </vs-col>
+        </vs-row>
+      </vs-row>
+    </div>
   </div>
 </template>
 
@@ -68,7 +130,6 @@
 export default {
   data () {
     return {
-      keyList: ['RDV', 'Nom, prénom', 'Sexe', 'Date de naissance', 'Diabète', 'Poids', 'Taille', 'IBM', 'Examen', 'NISS', 'Téléphane'],
       patientList: [],
       rdvList: [],
       dateJ: new Date(),
@@ -87,6 +148,15 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
+#agendaChu {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: left;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+.colorH{color:#563d7c}
 h1, h2 {
   font-weight: normal;
 }

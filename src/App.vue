@@ -19,6 +19,8 @@ export default {
 </script>
 
 <style>
+.badge-colorH{color: #f8f9fa;background-color:#563d7c}
+.badge-colorU{color: #f8f9fa;background-color:#ffc107}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

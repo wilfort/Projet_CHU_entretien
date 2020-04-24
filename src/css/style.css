@@ -1,0 +1,11 @@
+.text-align-left {
+  text-align: left;}
+.text-align-right {
+  text-align: right;}
+.text-align-center {text-align: center;}
+.text-align-justify {text-align: justify;}
+.text-align-justify-all {text-align: justify-all;}
+.text-align-start {text-align: start;}
+.text-align-end {text-align: end;}
+.text-align-match-parent {text-align: match-parent;}
+.badge-colorU{color: #f8f9fa;background-color:#563d7c}
