@@ -85,22 +85,22 @@ export default {
       keyList: ['RDV', 'Nom, prénom', 'Sexe', 'Date de naissance', 'Diabète', 'Poids', 'Taille', 'IBM', 'Examen', 'NISS', 'Téléphane'],
       patientList: [],
       rdvList: [],
-      examenM: [
+      examenM: [// autre type examen medicale
         'autre',
         'radio',
         'scanner',
-        'IRM',
-        'autre + radio',
-        'autre + scanner',
-        'autre + IRM',
-        'radio + scanner',
-        'radio + IRM',
-        'scanner + IRM',
-        'autre + radio + scanner',
-        'autre + radio + IRM',
-        'autre + scanner + IRM',
-        'radio + scanner + IRM',
-        'autre + radio + scanner + IRM'
+        'IRM'// ,
+        // 'autre + radio',
+        // 'autre + scanner',
+        // 'autre + IRM',
+        // 'radio + scanner',
+        // 'radio + IRM',
+        // 'scanner + IRM',
+        // 'autre + radio + scanner',
+        // 'autre + radio + IRM',
+        // 'autre + scanner + IRM',
+        // 'radio + scanner + IRM',
+        // 'autre + radio + scanner + IRM'
       ],
       dateJ: new Date(),
       semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
@@ -159,6 +159,7 @@ export default {
         this.addPatientList()
         this.newRdv.patient = this.newPatient.id
       }
+      chid += this.newRdv.patient
       this.newRdv.id = chid
       this.$firebaseRefs.rdvList.child(chid).set(this.newRdv)
       this.popupActive = !this.popupActive
@@ -171,31 +172,31 @@ export default {
 
 </script>
 
-<!-- Add 'scoped' attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.before {
-    top: 50px;
-    right: -300px;
-    width: 300px;
-    background-color:yellow;
-    position:absolute;
+  <!-- Add 'scoped' attribute to limit CSS to this component only -->
+  <style scoped>
+  h1, h2 {
+    font-weight: normal;
   }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
+  .before {
+      top: 50px;
+      right: -300px;
+      width: 300px;
+      background-color:yellow;
+      position:absolute;
+    }
 
-  .after {
-    right: 50px;
-  }
+    .after {
+      right: 50px;
+    }
 </style>

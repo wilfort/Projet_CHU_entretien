@@ -60,13 +60,17 @@
             </vs-col>
           </vs-col>
         </vs-row>
-        <vs-row v-for='entry in rdvList' :key='entry.id'>
+        <vs-row v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule"><!-- v-show condition hopital, date et annulation -->
           <vs-col w="3">
             <vs-col w="2">
               {{entry['heure']}}
             </vs-col>
             <vs-col w="8">
-              {{patientList[entry['patient']]['Nom']}}, {{patientList[entry['patient']]['Prenom']}} <span class="colorH"><i class="fas fa-x-ray"></i></span> <span class="colorH"><i class="fas fa-biohazard"></i></span> <span class="colorH"><i class="fas fa-brain"></i></span> <b-badge v-if="entry['urgent']=='y'" pill variant="colorU">URGENT</b-badge>
+              {{patientList[entry['patient']]['Nom']}}, {{patientList[entry['patient']]['Prenom']}}
+              <span class="colorH" v-show="entry.examen=='scanner'"><i class="fas fa-x-ray"></i></span>
+              <span class="colorH" v-show="entry.examen=='radio'"><i class="fas fa-biohazard"></i></span>
+              <span class="colorH" v-show="entry.examen=='IRM'"><i class="fas fa-brain"></i></span>
+              <b-badge v-show="entry['urgent']=='y'" pill variant="colorU">URGENT</b-badge>
             </vs-col>
             <vs-col w="2">
               <span v-if="patientList[entry['patient']]['Sexe']==='M'">M</span><span v-if="patientList[entry['patient']]['Sexe']==='F'">F</span>
@@ -111,12 +115,12 @@
             </vs-col>
             <vs-col w="2">
               <vs-button
-        only-arrows
-        icon
-        color="rgb(0,222,0)"
-      >
-        <i class="far fa-edit"></i>
-      </vs-button>
+                only-arrows
+                icon
+                color="rgb(0,222,0)"
+              >
+                <i class="far fa-edit"></i>
+              </vs-button>
             </vs-col>
           </vs-col>
         </vs-row>
