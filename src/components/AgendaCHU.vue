@@ -60,7 +60,7 @@
             </vs-col>
           </vs-col>
         </vs-row>
-        <vs-row v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule"><!-- v-show condition hopital, date et annulation -->
+        <vs-row v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && dateJ.toLocaleDateString()==entry.date"><!-- v-show condition hopital, date et annulation -->
           <vs-col w="3">
             <vs-col w="2">
               {{entry['heure']}}
@@ -114,17 +114,85 @@
               {{patientList[entry['patient']]['Telephone']}}
             </vs-col>
             <vs-col w="2">
-              <vs-button
+              <b-button
                 only-arrows
                 icon
-                color="rgb(0,222,0)"
+                variant="success"
+                id="show-btn" @click="showModal(entry)"
               >
                 <i class="far fa-edit"></i>
-              </vs-button>
+              </b-button>
             </vs-col>
           </vs-col>
         </vs-row>
       </vs-row>
+    </div>
+
+    <div id="modal">
+      <b-modal ref="my-modal" hide-footer hide-header title="Using Component Methods">
+        <div>
+          <b-row>
+            <b-col>
+              <h3>Rdv du patient : {{rdvModalN}}</h3>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="6">Date : </b-col>
+            <b-col cols="6">
+              <b-input-group>
+                <b-form-input
+                  v-model="rdvModal['date']"
+                  type="text"
+                  placeholder="YYYY-MM-DD"
+                  autocomplete="off"
+                ></b-form-input>
+                <b-input-group-append>
+                  <b-form-datepicker v-model="rdvModal['date']" :date-disabled-fn="dateDisabled" locale="fr"
+                  button-only
+                  right></b-form-datepicker>
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="6">Examen : </b-col>
+            <b-col cols="6">
+              <b-form-select v-model="rdvModal['examen']">
+                <b-form-select-option v-for="elemEM in examenM" :key='elemEM.id' :value='elemEM'>{{elemEM}}</b-form-select-option>
+              </b-form-select>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="6">Heure : </b-col>
+            <b-col cols="6">
+              <b-form-select v-model="rdvModal['heure']">
+                <b-form-select-option v-for="elemRDV in heureRDV" :key='elemRDV.id' :value='elemRDV'>{{elemRDV}}</b-form-select-option>
+              </b-form-select>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="6">l'Hôpital : </b-col>
+            <b-col cols="6">
+              <b-form-select v-model="rdvModal['hopital']">
+                <b-form-select-option v-for="elemH in hopital" :key='elemH.id' :value='elemH'>{{elemH}}</b-form-select-option>
+              </b-form-select>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col cols="6">Urgent : </b-col>
+            <b-col cols="6">
+              <b-form-select v-model="rdvModal['urgent']">
+                <b-form-select-option value="n">Non</b-form-select-option>
+                <b-form-select-option value="y">Yes</b-form-select-option>
+              </b-form-select>
+            </b-col>
+          </b-row>
+        </div>
+        <div class="d-block text-center">
+          <h3>Hello From My Modal!</h3>
+        </div>
+        <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+      </b-modal>
     </div>
   </div>
 </template>
@@ -134,16 +202,87 @@
 export default {
   data () {
     return {
+      rdvModalId: '',
+      rdvModalN: '',
+      rdvModal: {},
       patientList: [],
       rdvList: [],
       dateJ: new Date(),
-      semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi']
+      semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+      examenM: [// autre type examen medicale
+        'autre',
+        'radio',
+        'scanner',
+        'IRM'// ,
+        // 'autre + radio',
+        // 'autre + scanner',
+        // 'autre + IRM',
+        // 'radio + scanner',
+        // 'radio + IRM',
+        // 'scanner + IRM',
+        // 'autre + radio + scanner',
+        // 'autre + radio + IRM',
+        // 'autre + scanner + IRM',
+        // 'radio + scanner + IRM',
+        // 'autre + radio + scanner + IRM'
+      ],
+      heureRDV: [// plage horaire des Rdv
+        '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+        '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:30'],
+      hopital: ['CHU', 'CNDG', 'GHDC']
     }
   },
   firebase () {
     return {
       patientList: this.$db.ref('Patient'),
       rdvList: this.$db.ref('Rdv')
+    }
+  },
+  methods: {
+    dateDisabled (ymd, date) {
+      let check = false
+      const weekday = date.getDay()
+      const day = date.getDate()
+      const month = date.getMonth()
+      if ((weekday === 0) || (weekday === 6) || (month === 0 && day === 1) || (month === 4 && day === 1) || (month === 6 && day === 21) || (month === 7 && day === 15) || (month === 10 && day === 1) || (month === 10 && day === 11) || (month === 11 && day === 25) || (month === 6 && day === 11) || (month === 10 && day === 2) || (month === 10 && day === 15)) {
+        check = true
+      }
+      // Return `true` if the date should be disabled
+      return check
+    },
+    showModal (x) {
+      this.rdvModalN = this.patientList[x['patient']]['Nom'] + ' ' + this.patientList[x['patient']]['Prenom']
+      this.rdvModal = x
+      this.rdvModalId = x.id
+      // console.log(this.rdvModal)
+      this.$refs['my-modal'].show()
+    },
+    hideModal () {
+      let data = this.rdvModal
+      let dateM = new Date(data['date'])
+      console.log(data['date'])
+      let mdateM = '' + dateM.toLocaleDateString()
+      if (mdateM === 'Invalid Date') {
+        mdateM = data['date']
+      }
+      data.date = mdateM
+      console.log(mdateM)
+      mdateM = mdateM.replace(/\//gi, '')
+      let heureM = data['heure']
+      console.log(mdateM)
+      heureM = heureM.replace(':', '')
+      let childM = '' + data['hopital'] + '' + mdateM + '' + heureM + '' + data.patient
+      data.id = childM
+      this.$firebaseRefs.rdvList.child(this.rdvModalId).remove()
+      this.$firebaseRefs.rdvList.child(childM).set(data)
+
+      setTimeout(() => {
+        //
+        this.$refs['my-modal'].hide()
+        this.rdvModal = {}
+        this.rdvModalId = ''
+        this.rdvModalN = ''
+      }, 1)
     }
   }
 }
