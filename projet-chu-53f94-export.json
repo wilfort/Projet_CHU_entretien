@@ -232,24 +232,104 @@
     "id" : 20
   } ],
   "Rdv" : {
-    "CHU1704202010450" : {
-      "annule" : true,
-      "date" : "2020-04-17",
-      "examen" : "scanner",
-      "heure" : "10:45",
+    "CHU1704202010301" : {
+      "annule" : false,
+      "date" : "17/04/2020",
+      "examen" : "autre",
+      "heure" : "10:30",
       "hopital" : "CHU",
-      "id" : "CHU1704202010450",
+      "id" : "CHU1704202010301",
+      "patient" : 1,
+      "urgent" : "n"
+    },
+    "CHU2104202009001" : {
+      "annule" : false,
+      "date" : "21/04/2020",
+      "examen" : "autre",
+      "heure" : "09:00",
+      "hopital" : "CHU",
+      "id" : "CHU2104202009001",
+      "patient" : 1,
+      "urgent" : "n"
+    },
+    "CHU27042020100010" : {
+      "annule" : false,
+      "date" : "27/04/2020",
+      "examen" : "autre",
+      "heure" : "10:00",
+      "hopital" : "CHU",
+      "id" : "CHU27042020100010",
+      "patient" : 10,
+      "urgent" : "n"
+    },
+    "CHU2704202010301" : {
+      "annule" : false,
+      "date" : "27/04/2020",
+      "examen" : "scanner",
+      "heure" : "10:30",
+      "hopital" : "CHU",
+      "id" : "CHU2704202010301",
+      "patient" : 1,
+      "urgent" : "y"
+    },
+    "CHU27042020130010" : {
+      "annule" : false,
+      "date" : "27/04/2020",
+      "examen" : "scanner",
+      "heure" : "13:00",
+      "hopital" : "CHU",
+      "id" : "CHU27042020130010",
+      "patient" : 10,
+      "urgent" : "y"
+    },
+    "CHU28042020073013" : {
+      "annule" : false,
+      "date" : "28/04/2020",
+      "examen" : "radio",
+      "heure" : "07:30",
+      "hopital" : "CHU",
+      "id" : "CHU28042020073013",
+      "patient" : 13,
+      "urgent" : "n"
+    },
+    "CHU2804202008000" : {
+      "annule" : true,
+      "date" : "28/04/2020",
+      "examen" : "autre",
+      "heure" : "08:00",
+      "hopital" : "CHU",
+      "id" : "CHU2804202008000",
       "patient" : 0,
       "urgent" : "n"
     },
-    "CHU1704202010451" : {
+    "CHU2804202008300" : {
       "annule" : false,
-      "date" : "2020-04-17",
-      "examen" : "scanner",
-      "heure" : "10:45",
+      "date" : "28/04/2020",
+      "examen" : "autre",
+      "heure" : "08:30",
       "hopital" : "CHU",
-      "id" : "CHU1704202010451",
-      "patient" : 1,
+      "id" : "CHU2804202008300",
+      "patient" : 0,
+      "urgent" : "n"
+    },
+    "CNDG22042020080017" : {
+      "annule" : false,
+      "date" : "22/04/2020",
+      "examen" : "radio",
+      "heure" : "08:00",
+      "hopital" : "CNDG",
+      "id" : "CNDG22042020080017",
+      "patient" : 17,
+      "urgent" : "n"
+    },
+    "CNDG27042020103010" : {
+      "annule" : false,
+      "date" : "27/04/2020",
+      "examen" : "autre",
+      "heure" : "10:30",
+      "hopital" : "CNDG",
+      "id" : "CNDG27042020103010",
+      "patient" : 10,
       "urgent" : "n"
     }
   }
