@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Accueil from '@/components/Accueil'
 import AgendaJCHU from '@/components/AgendaJCHU'
+import AgendaSCHU from '@/components/AgendaSCHU'
 import AgendaMCHU from '@/components/AgendaMCHU'
 import NewRdv from '@/components/NewRdv'
 
@@ -24,6 +25,11 @@ export default new Router({
       path: '/AgendaCHU',
       name: 'AgendaCHU',
       component: AgendaJCHU
+    },
+    {
+      path: '/AgendaSCHU',
+      name: 'AgendaSCHU',
+      component: AgendaSCHU
     },
     {
       path: '/AgendaMCHU',
