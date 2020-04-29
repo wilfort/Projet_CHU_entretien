@@ -6,6 +6,7 @@ import AgendaJCHU from '@/components/AgendaJCHU'
 import AgendaSCHU from '@/components/AgendaSCHU'
 import AgendaMCHU from '@/components/AgendaMCHU'
 import NewRdv from '@/components/NewRdv'
+import Recherche from '@/components/Recherche'
 
 Vue.use(Router)
 
@@ -15,6 +16,11 @@ export default new Router({
       path: '/',
       name: 'Accueil',
       component: Accueil
+    },
+    {
+      path: '/Recherche',
+      name: 'Recherche',
+      component: Recherche
     },
     {
       path: '/test',
