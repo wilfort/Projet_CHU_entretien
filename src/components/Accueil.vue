@@ -1,4 +1,15 @@
 <template>
+<div>
+    <b-navbar>
+      <b-navbar-nav>
+        <b-nav-item href="/#/" class="navColRed navColBR"><span class="navColText">Accueil</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCHU" class="navColRed "><span class="navColText">CHU</span></b-nav-item>
+        <b-nav-item href="/#/AgendaGHDC" class="navColRed "><span class="navColText">GHDC</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCNDG" class="navColRed "><span class="navColText">CNDG</span></b-nav-item>
+        <b-nav-item href="/#/Recherche" class="navColRed "><span class="navColText">Recherche RDV</span></b-nav-item>
+        <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
   <div class="Accueil">
     <h1>{{ msg }}</h1>
     <h2>Sélétion votre hôpital</h2>
@@ -12,20 +23,20 @@
       </li>
       <li>
         <router-link
-          to="/test"
+          to="/AgendaGHDC"
         >
           GHDC
         </router-link>
       </li>
       <li>
         <router-link
-          to ="/test"
+          to ="/AgendaCNDG"
         >
           CNDG
         </router-link>
       </li>
     </ul>
-  </div>
+  </div></div>
 </template>
 
 <script>
@@ -50,7 +61,7 @@ ul {
 }
 li {
   display: inline-block;
-  margin: 0 10px;
+  /* margin: 0 10px; */
 }
 a {
   color: #42b983;

@@ -15,9 +15,9 @@
         </b-nav-text>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item href="/#/AgendaMCHU" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
-        <b-nav-item href="#/AgendaSCHU" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
+        <b-nav-item href="/#/AgendaMGHDC" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
+        <b-nav-item href="#/AgendaSGHDC" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
+        <b-nav-item href="/#/AgendaGHDC" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <div id="agendaMChu">
@@ -50,7 +50,7 @@
               <b-td style="width:5%;">{{verSemaine(semaine[0])}}</b-td>
               <b-td v-for='day in semaine' :key='day.id' style="width:19%;">
                 <div :style="colorDay(day.getMonth(), dateJ.getMonth())">{{day.getDate()}}</div>
-                <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && day.toLocaleDateString()==entry.date">
+                <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='GHDC' && !entry.annule && day.toLocaleDateString()==entry.date">
                   <b-badge :id="semaine.id" :variant="verUrgent(entry['urgent'])" style="width: 100%; text-align: justify;"
                   v-b-tooltip.hover :title='verMessage(entry, patientList[entry.patient])' >
                     <div>

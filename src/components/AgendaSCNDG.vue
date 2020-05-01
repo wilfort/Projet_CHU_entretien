@@ -11,56 +11,46 @@
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-text>
-          <h1>{{mois[dateJ.getMonth()]}} {{dateJ.getFullYear()}}</h1>
+          <h1>{{verSemmaine(dateJ)[0].toLocaleDateString()}} - {{verSemmaine(dateJ)[4].toLocaleDateString()}}</h1>
         </b-nav-text>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item href="/#/AgendaMCHU" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
-        <b-nav-item href="#/AgendaSCHU" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
+        <b-nav-item href="/#/AgendaMCNDG" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
+        <b-nav-item href="#/AgendaSCNDG" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCNDG" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-    <div id="agendaMChu">
+    <div id="agendaSChu">
       <div class="center grid">
         <b-table-simple responsive bordered>
           <b-thead>
             <b-tr>
-              <b-th style="width:5%;">
-                Sem.
-              </b-th>
-              <b-th style="width:19%; text-align: center;">
+              <b-th style="width:20%; text-align: center;">
                 Lundi
               </b-th>
-              <b-th style="width:19%; text-align: center;">
+              <b-th style="width:20%; text-align: center;">
                 Mardi
               </b-th>
-              <b-th style="width:19%; text-align: center;">
+              <b-th style="width:20%; text-align: center;">
                 Mercredi
               </b-th>
-              <b-th style="width:19%; text-align: center;">
+              <b-th style="width:20%; text-align: center;">
                 Jeudi
               </b-th>
-              <b-th style="width:19%; text-align: center;">
+              <b-th style="width:20%; text-align: center;">
                 Vendredi
               </b-th>
             </b-tr>
           </b-thead>
           <b-tbody>
-            <b-tr v-for='semaine in this.verCalendir()' :key='semaine.id' style="height:150px;">
-              <b-td style="width:5%;">{{verSemaine(semaine[0])}}</b-td>
-              <b-td v-for='day in semaine' :key='day.id' style="width:19%;">
-                <div :style="colorDay(day.getMonth(), dateJ.getMonth())">{{day.getDate()}}</div>
-                <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && day.toLocaleDateString()==entry.date">
+            <b-tr>
+              <b-td v-for='day in verSemmaine(dateJ)' :key='day.id'>
+                <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CNDG' && !entry.annule && day.toLocaleDateString()==entry.date">
                   <b-badge :id="semaine.id" :variant="verUrgent(entry['urgent'])" style="width: 100%; text-align: justify;"
                   v-b-tooltip.hover :title='verMessage(entry, patientList[entry.patient])' >
                     <div>
                       {{entry.heure}} {{patientList[entry.patient]['Nom']}}, {{patientList[entry.patient]['Prenom']}} <b-badge v-if="patientList[entry['patient']]['Diabete']!='n'" variant="colorH">Diabete</b-badge></div>
                   </b-badge>
-                  <!-- <b-badge :id="semaine.id" v-show="entry['urgent']!='y'" variant="primary" style="width: 100%;">
-                    <div>
-                      {{entry.heure}} {{patientList[entry.patient]['Nom']}}, {{patientList[entry.patient]['Prenom']}} <b-badge v-if="patientList[entry['patient']]['Diabete']!='n'" variant="colorH">Diabete</b-badge></div>
-                  </b-badge> -->
-                  <!-- <b-tooltip :target="semaine.id">{{entry.id}}</b-tooltip> -->
                 </div>
               </b-td>
             </b-tr>
@@ -79,7 +69,6 @@ export default {
       patientList: [],
       rdvList: [],
       dateJ: new Date(),
-      mois: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
       semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
       examenM: [// autre type examen medicale
         'autre',
@@ -106,22 +95,11 @@ export default {
   },
   firebase () {
     return {
-      // firstDay: new Date(dateJ.getFullYear, dateJ.getMonth, 1),
       patientList: this.$db.ref('Patient'),
       rdvList: this.$db.ref('Rdv')
     }
   },
   methods: {
-    firstDay () {
-      let date = new Date()
-      let dateP = new Date(date.getFullYear(), date.getMonth(), 1)
-      return dateP
-    },
-    lastDay () {
-      let val = new Date()
-      let dateD = new Date(val.getFullYear(), val.getMonth() + 1, 0)
-      return dateD
-    },
     colorDay (val1, val2) {
       if (val1 === val2) {
         return 'font-weight:bold; color:black; text-align: right;'
@@ -136,54 +114,39 @@ export default {
         return 'primary'
       }
     },
-    verCalendir () {
-      let preJour = this.firstDay()
-      let derJour = this.lastDay()
+    verSemmaine (x) {
       let calendir = []
-      let objetD1 = []
-      let objetD2 = []
       let test = 0
-      if (preJour.getDay() > 1) {
-        test = preJour.getDay() - 1
-      } else if (preJour.getDay() === 0) {
+      if (x.getDay() > 1) {
+        test = x.getDay() - 1
+      } else if (x.getDay() === 0) {
         test = 7 - 1
       }
       if (test > 0) {
         for (let index = test; index > 0; index--) {
-          let dateP = new Date(preJour.getFullYear(), preJour.getMonth(), 1 - index)
+          let dateP = new Date(x.getFullYear(), x.getMonth(), x.getDate() - index)
           calendir.push(dateP)
         }
       }
-      for (let index = 0; index < derJour.getDate(); index++) {
-        let dateP = new Date(preJour.getFullYear(), preJour.getMonth(), 1 + index)
-        if (dateP.getDay() > 0 && dateP.getDay() < 6) {
+      test = 5 - x.getDay()
+      if (test < 0) {
+        test = 0
+      } else {
+        for (let index = 0; index < test; index++) {
+          let dateP = new Date(x.getFullYear(), x.getMonth(), x.getDate() + index)
           calendir.push(dateP)
         }
       }
-      for (let index = derJour.getDay(); index < 5; index++) {
-        let val = 5 - index
-        let dateP = new Date(preJour.getFullYear(), preJour.getMonth() + 1, val)
-        if (index > 0) {
+
+      if (calendir.length < 5) {
+        test = 5 - calendir.length
+        for (let index = 0; index < test; index++) {
+          let dateP = new Date(x.getFullYear(), x.getMonth() + 1, 1 + index)
           calendir.push(dateP)
         }
       }
-      for (let index = 0; index < calendir.length; index++) {
-        objetD1.push(calendir[index])
-        if (index % 5 === 4) {
-          objetD2.push(objetD1)
-          objetD1 = []
-        }
-      }
-      return objetD2
-    },
-    verSemaine (uneDate) {
-      let d = new Date(uneDate)
-      let DoW = d.getDay()
-      d.setDate(d.getDate() - (DoW + 6) % 7 + 3)
-      var ms = d.valueOf()
-      d.setMonth(0)
-      d.setDate(4)
-      return Math.round((ms - d.valueOf()) / (7 * 864e5)) + 1
+      console.log(calendir)
+      return calendir
     },
     verMessage (rdv, patient) {
       let verMessage = 'Rdv du patient est le ' + rdv.date + ', l\'heure est à ' + rdv.heure + '.\n'
@@ -215,13 +178,14 @@ export default {
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
-#agendaMChu {
+
+#agendaSChu{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top:20px;
 }
 .colorH{color:#563d7c}
 

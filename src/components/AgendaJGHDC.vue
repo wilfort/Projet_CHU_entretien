@@ -10,9 +10,9 @@
         <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item href="/#/AgendaMCHU" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
-        <b-nav-item href="#/AgendaSCHU" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
+        <b-nav-item href="/#/AgendaMGHDC" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
+        <b-nav-item href="#/AgendaSGHDC" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
+        <b-nav-item href="/#/AgendaGHDC" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <div id="agendaChu">
@@ -65,7 +65,7 @@
             </b-tr>
           </b-thead>
           <b-tbody>
-            <b-tr v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && dateJ.toLocaleDateString()==entry.date">
+            <b-tr v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='GHDC' && !entry.annule && dateJ.toLocaleDateString()==entry.date">
               <b-td>
                 {{entry['heure']}}
               </b-td>

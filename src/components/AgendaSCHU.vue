@@ -1,41 +1,63 @@
 <template>
-  <div id="agendaChu">
-    <div class="center grid">
-      <b-table-simple responsive bordered>
-        <b-thead>
-          <b-tr>
-            <b-th style="width:20%; text-align: center;">
-              Lundi
-            </b-th>
-            <b-th style="width:20%; text-align: center;">
-              Mardi
-            </b-th>
-            <b-th style="width:20%; text-align: center;">
-              Mercredi
-            </b-th>
-            <b-th style="width:20%; text-align: center;">
-              Jeudi
-            </b-th>
-            <b-th style="width:20%; text-align: center;">
-              Vendredi
-            </b-th>
-          </b-tr>
-        </b-thead>
-        <b-tbody>
-          <b-tr>
-            <b-td v-for='day in verSemmaine(dateJ)' :key='day.id'>
-              <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && day.toLocaleDateString()==entry.date">
-                <b-badge :id="semaine.id" :variant="verUrgent(entry['urgent'])" style="width: 100%; text-align: justify;"
-                v-b-tooltip.hover :title='verMessage(entry, patientList[entry.patient])' >
-                  <div>
-                    {{entry.heure}} {{patientList[entry.patient]['Nom']}}, {{patientList[entry.patient]['Prenom']}} <b-badge v-if="patientList[entry['patient']]['Diabete']!='n'" variant="colorH">Diabete</b-badge></div>
-                </b-badge>
-              </div>
-            </b-td>
-          </b-tr>
-        </b-tbody>
-      </b-table-simple>
+  <div>
+    <b-navbar>
+      <b-navbar-nav>
+        <b-nav-item href="/#/" class="navColRed navColBR"><span class="navColText">Accueil</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCHU" class="navColRed "><span class="navColText">CHU</span></b-nav-item>
+        <b-nav-item href="/#/AgendaGHDC" class="navColRed "><span class="navColText">GHDC</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCNDG" class="navColRed "><span class="navColText">CNDG</span></b-nav-item>
+        <b-nav-item href="/#/Recherche" class="navColRed "><span class="navColText">Recherche RDV</span></b-nav-item>
+        <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-text>
+          <h1>{{verSemmaine(dateJ)[0].toLocaleDateString()}} - {{verSemmaine(dateJ)[4].toLocaleDateString()}}</h1>
+        </b-nav-text>
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item href="/#/AgendaMCHU" class="navColRed navColBR"><span class="navColText">Mois</span></b-nav-item>
+        <b-nav-item href="#/AgendaSCHU" class="navColRed "><span class="navColText">Semaine</span></b-nav-item>
+        <b-nav-item href="/#/AgendaCHU" class="navColRed navColBL"><span class="navColText">Jour</span></b-nav-item>
+      </b-navbar-nav>
+    </b-navbar>
+    <div id="agendaSChu">
+      <div class="center grid">
+        <b-table-simple responsive bordered>
+          <b-thead>
+            <b-tr>
+              <b-th style="width:20%; text-align: center;">
+                Lundi
+              </b-th>
+              <b-th style="width:20%; text-align: center;">
+                Mardi
+              </b-th>
+              <b-th style="width:20%; text-align: center;">
+                Mercredi
+              </b-th>
+              <b-th style="width:20%; text-align: center;">
+                Jeudi
+              </b-th>
+              <b-th style="width:20%; text-align: center;">
+                Vendredi
+              </b-th>
+            </b-tr>
+          </b-thead>
+          <b-tbody>
+            <b-tr>
+              <b-td v-for='day in verSemmaine(dateJ)' :key='day.id'>
+                <div v-for='entry in rdvList' :key='entry.id' v-show="entry.hopital=='CHU' && !entry.annule && day.toLocaleDateString()==entry.date">
+                  <b-badge :id="semaine.id" :variant="verUrgent(entry['urgent'])" style="width: 100%; text-align: justify;"
+                  v-b-tooltip.hover :title='verMessage(entry, patientList[entry.patient])' >
+                    <div>
+                      {{entry.heure}} {{patientList[entry.patient]['Nom']}}, {{patientList[entry.patient]['Prenom']}} <b-badge v-if="patientList[entry['patient']]['Diabete']!='n'" variant="colorH">Diabete</b-badge></div>
+                  </b-badge>
+                </div>
+              </b-td>
+            </b-tr>
+          </b-tbody>
+        </b-table-simple>
 
+      </div>
     </div>
   </div>
 </template>
@@ -96,9 +118,9 @@ export default {
       let calendir = []
       let test = 0
       if (x.getDay() > 1) {
-        test = x.getDay() - 2
+        test = x.getDay() - 1
       } else if (x.getDay() === 0) {
-        test = 7 - 2
+        test = 7 - 1
       }
       if (test > 0) {
         for (let index = test; index > 0; index--) {
@@ -123,6 +145,7 @@ export default {
           calendir.push(dateP)
         }
       }
+      console.log(calendir)
       return calendir
     },
     verMessage (rdv, patient) {
@@ -156,27 +179,14 @@ export default {
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 <style scoped>
 
-#agendaChu{
+#agendaSChu{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top:20px;
 }
 .colorH{color:#563d7c}
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>
