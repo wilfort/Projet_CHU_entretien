@@ -39,9 +39,9 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 
 ## Source
-[guide de deploy vue firebase](https://medium.com/@rachidsakara/how-to-deploy-vue-js-applications-with-firebase-hosting-40cfa7f724e4)
-[Vue.js & Firebase Realtime Database](https://www.youtube.com/watch?v=YEZ9luIbPWA)
-[fontawesome](https://fontawesome.com/icons?d=gallery)
-[vue](https://vuejs.org/)
-[bootstrap vue](https://bootstrap-vue.org/docs/)
-[firebase](https://firebase.google.com/docs/)
+> [guide de deploy vue firebase](https://medium.com/@rachidsakara/how-to-deploy-vue-js-applications-with-firebase-hosting-40cfa7f724e4)
+> [Vue.js & Firebase Realtime Database](https://www.youtube.com/watch?v=YEZ9luIbPWA)
+> [fontawesome](https://fontawesome.com/icons?d=gallery)
+> [vue](https://vuejs.org/)
+> [bootstrap vue](https://bootstrap-vue.org/docs/)
+> [firebase](https://firebase.google.com/docs/)
