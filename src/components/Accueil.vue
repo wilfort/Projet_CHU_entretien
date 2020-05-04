@@ -1,36 +1,26 @@
 <template>
 <div>
-    <b-navbar>
-      <b-navbar-nav>
-        <b-nav-item href="/#/" class="navColRed navColBR"><span class="navColText">Accueil</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed "><span class="navColText">CHU</span></b-nav-item>
-        <b-nav-item href="/#/AgendaGHDC" class="navColRed "><span class="navColText">GHDC</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCNDG" class="navColRed "><span class="navColText">CNDG</span></b-nav-item>
-        <b-nav-item href="/#/Recherche" class="navColRed "><span class="navColText">Recherche RDV</span></b-nav-item>
-        <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
-      </b-navbar-nav>
-    </b-navbar>
-  <div class="Accueil">
+  <div id="Accueil">
     <h1>{{ msg }}</h1>
     <h2>Sélétion votre hôpital</h2>
-    <ul>
-      <li>
+    <ul class="hopitalUl">
+      <li class="hopitalLi">
         <router-link
-          to = "/AgendaCHU"
+          to = "/Agenda/CHU"
         >
           CHU de Charleroi
         </router-link>
       </li>
-      <li>
+      <li class="hopitalLi">
         <router-link
-          to="/AgendaGHDC"
+          to="/Agenda/GHDC"
         >
           GHDC
         </router-link>
       </li>
-      <li>
+      <li class="hopitalLi">
         <router-link
-          to ="/AgendaCNDG"
+          to ="/Agenda/CNDG"
         >
           CNDG
         </router-link>
@@ -52,18 +42,28 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#Accueil {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 60px;
+}
 h1, h2 {
   font-weight: normal;
 }
 ul {
   list-style-type: none;
-  padding: 0;
+  padding: 0 ;
 }
 li {
   display: inline-block;
-  /* margin: 0 10px; */
 }
 a {
   color: #42b983;
+}
+.hopitalUl{margin-top: 40px;}
+.hopitalLi{
+  margin: 0 40px;
 }
 </style>

@@ -1,14 +1,8 @@
 <template>
   <div>
     <b-navbar>
-      <b-navbar-nav>
-        <b-nav-item href="/#/" class="navColRed navColBR"><span class="navColText">Accueil</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed "><span class="navColText">CHU</span></b-nav-item>
-        <b-nav-item href="/#/AgendaGHDC" class="navColRed "><span class="navColText">GHDC</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCNDG" class="navColRed "><span class="navColText">CNDG</span></b-nav-item>
-        <b-nav-item href="/#/Recherche" class="navColRed "><span class="navColText">Recherche RDV</span></b-nav-item>
-        <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
-      </b-navbar-nav>
+       <navBar>
+      </navBar>
     </b-navbar>
   <div id="agendaChu">
     <h1><i class="fas fa-neuter rotate-315"></i> Recherche de Rendez-vous</h1>
@@ -39,12 +33,12 @@
       <span style="width: 200px;padding: 0px 20px">
         Rendez-vous annulés
       </span>
-        <b-form-checkbox v-model="checkedA" name="check-button" switch>
+        <b-form-checkbox v-model="checkedAnnulation" name="check-button" switch>
           Afficher les rendez-vous annulés
         </b-form-checkbox>
     </div>
     <b-button only-arrows icon variant="danger" @click="recherche"><i class="fas fa-neuter rotate-315"></i> Recherche</b-button>
-    <div class="center grid" v-show="checkedRechercheV">
+    <div class="center grid" v-show="voirRecherche" style="margin-top: 20px;">
       <b-table-simple striped responsive small>
         <b-thead>
           <b-tr>
@@ -146,12 +140,12 @@
               {{patientList[entry['patient']]['Taille']}} cm
             </b-td>
             <b-td>
-              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))==0">?</span>
+              <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))==0"><b-badge pill variant="colorH">?</b-badge></span>
                 <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>0&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<18.5"><b-badge pill variant="colorH">Poids insuffisant</b-badge></span>
                 <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=18.5&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<25">Poids normal</span>
                 <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=25&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<30"><b-badge pill variant="colorH">Excès pondéral, surpoids</b-badge></span>
                 <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=30&&(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))<40"><b-badge pill variant="colorH">Obésité</b-badge></span>
-                <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=40">Obésité morbide</span>
+                <span v-if="(patientList[entry['patient']]['Poids']/((patientList[entry['patient']]['Taille']/100)*(patientList[entry['patient']]['Taille']/100)))>=40"><b-badge pill variant="colorH">Obésité morbide</b-badge></span>
             </b-td>
             <b-td>
               {{entry['examen']}}
@@ -164,7 +158,7 @@
                   only-arrows
                   icon
                   variant="success"
-                  id="show-btn" @click="showModal(entry)"
+                  id="show-btn" @click="openModal(entry)"
                 >
                   <i class="far fa-edit"></i>
                 </b-button></b-td>
@@ -172,8 +166,8 @@
         </b-tbody>
       </b-table-simple>
       <div>
-        Show <b-form-select v-model="limitPerPage" style="width: 100px" v-on:change="onChangeNBPage($event)">
-      <b-form-select-option v-for="nbrPage in nbrPerPage" :key='nbrPage.id' :value='nbrPage'>{{nbrPage}}</b-form-select-option>
+        Show <b-form-select v-model="limitParPage" style="width: 100px" v-on:change="onChangeNBPage($event)">
+      <b-form-select-option v-for="nbrPage in nbrElemParPage" :key='nbrPage.id' :value='nbrPage'>{{nbrPage}}</b-form-select-option>
       </b-form-select> entries</div>
       <div>
         <b-pagination>
@@ -186,7 +180,7 @@
         <div>
           <b-row>
             <b-col>
-              <h3>Rdv du patient : {{rdvModalN}}</h3>
+              <h3>Rdv du patient : {{elementModal.rdvModalN}}</h3>
             </b-col>
           </b-row>
           <b-row>
@@ -194,13 +188,13 @@
             <b-col cols="6">
               <b-input-group>
                 <b-form-input
-                  v-model="rdvModal['date']"
+                  v-model="elementModal.rdvModal['date']"
                   type="text"
                   placeholder="YYYY-MM-DD"
                   autocomplete="off"
                 ></b-form-input>
                 <b-input-group-append>
-                  <b-form-datepicker v-model="rdvModal['date']" :date-disabled-fn="dateDisabled" locale="fr"
+                  <b-form-datepicker v-model="elementModal.rdvModal['date']" :date-disabled-fn="dateDisabled" locale="fr"
                   button-only
                   right></b-form-datepicker>
                 </b-input-group-append>
@@ -210,65 +204,70 @@
           <b-row>
             <b-col cols="6">Examen : </b-col>
             <b-col cols="6">
-              <b-form-select v-model="rdvModal['examen']">
-                <b-form-select-option v-for="elemEM in examenM" :key='elemEM.id' :value='elemEM'>{{elemEM}}</b-form-select-option>
+              <b-form-select v-model="elementModal.rdvModal['examen']">
+                <b-form-select-option v-for="elemEM in $listeData.examenM" :key='elemEM.id' :value='elemEM'>{{elemEM}}</b-form-select-option>
               </b-form-select>
             </b-col>
           </b-row>
           <b-row>
             <b-col cols="6">Heure : </b-col>
             <b-col cols="6">
-              <b-form-select v-model="rdvModal['heure']">
-                <b-form-select-option v-for="elemRDV in heureRDV" :key='elemRDV.id' :value='elemRDV'>{{elemRDV}}</b-form-select-option>
+              <b-form-select v-model="elementModal.rdvModal['heure']">
+                <b-form-select-option v-for="elemRDV in $listeData.heureRDV" :key='elemRDV.id' :value='elemRDV'>{{elemRDV}}</b-form-select-option>
               </b-form-select>
             </b-col>
           </b-row>
           <b-row>
             <b-col cols="6">l'Hôpital : </b-col>
             <b-col cols="6">
-              <b-form-select v-model="rdvModal['hopital']">
-                <b-form-select-option v-for="elemH in hopital" :key='elemH.id' :value='elemH'>{{elemH}}</b-form-select-option>
+              <b-form-select v-model="elementModal.rdvModal['hopital']">
+                <b-form-select-option v-for="elemH in $listeData.hopital" :key='elemH.id' :value='elemH'>{{elemH}}</b-form-select-option>
               </b-form-select>
             </b-col>
           </b-row>
           <b-row>
             <b-col cols="6">Urgent : </b-col>
             <b-col cols="6">
-              <b-form-select v-model="rdvModal['urgent']">
+              <b-form-select v-model="elementModal.rdvModal['urgent']">
                 <b-form-select-option value="n">Non</b-form-select-option>
                 <b-form-select-option value="y">Yes</b-form-select-option>
               </b-form-select>
             </b-col>
           </b-row>
         </div>
-        <div class="d-block text-center">
-          <h3>Hello From My Modal!</h3>
-        </div>
-        <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+        <b-button class="mt-3" variant="outline-danger" block @click="fermetureModal">Close Me</b-button>
       </b-modal>
     </div>
   </div></div>
 </template>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script>
+import * as fonction from '../js/fonction'
+import navBar from '@/components/navBar'
 export default {
+  components: {
+    navBar
+  },
   data () {
     return {
-      limitPerPage: 5,
-      items: [],
-      rdvModalId: '',
-      rdvModalN: '',
-      rdvModal: {},
-      keyM: '',
-      checkedA: false,
+      limitParPage: 5,
+      memoireRecherche: [],
+      elementModal: {
+        rdvModalN: '',
+        rdvModal: {},
+        rdvModalId: ''
+      },
+      checkedAnnulation: false,
       checkedRecherche: false,
-      checkedRechercheV: false,
-      nbrPerPage:[5, 10, 20, 50, 100],
-      memo: 0,
-      patientR: null,
-      rechercheRDV:{
+      voirRecherche: false,
+      nbrElemParPage: [5, 10, 20, 50, 100],
+      rechercheRealiser: false,
+
+      rechercheRDV: {
         'rdv': {'asc': false, 'dsc': false, 'memo': ''},
-        'nom':{'asc': false, 'dsc': false, 'memo': ''},
+        'nom': {'asc': false, 'dsc': false, 'memo': ''},
         'sexe': {'asc': false, 'dsc': false, 'memo': ''},
         'dateN': {'asc': false, 'dsc': false, 'memo': ''},
         'diabete': {'asc': false, 'dsc': false, 'memo': ''},
@@ -278,35 +277,24 @@ export default {
         'examen': {'asc': false, 'dsc': false, 'memo': ''},
         'niss': {'asc': false, 'dsc': false, 'memo': ''},
         'tel': {'asc': false, 'dsc': false, 'memo': ''}},
+      modificationModal: false,
+
+      // pour la recherche
       dateDebutR: null,
       dateFinR: null,
       dateNPR: null,
-      patientList: [],
+      patientR: null,
+
       rdvRecherche: [],
+
+      patientList: [],
       rdvList: [],
-      // dateJ: new Date(),
-      // semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
-      examenM: [// autre type examen medicale
-        'autre',
-        'radio',
-        'scanner',
-        'IRM'// ,
-        // 'autre + radio',
-        // 'autre + scanner',
-        // 'autre + IRM',
-        // 'radio + scanner',
-        // 'radio + IRM',
-        // 'scanner + IRM',
-        // 'autre + radio + scanner',
-        // 'autre + radio + IRM',
-        // 'autre + scanner + IRM',
-        // 'radio + scanner + IRM',
-        // 'autre + radio + scanner + IRM'
-      ],
-      heureRDV: [// plage horaire des Rdv
-        '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-        '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:30'],
-      hopital: ['CHU', 'CNDG', 'GHDC']
+
+      elementModal: {
+        rdvModalN: '',
+        rdvModal: {},
+        rdvModalId: ''
+      }
     }
   },
   firebase () {
@@ -316,19 +304,21 @@ export default {
     }
   },
   methods: {
-    onChangeTri(elem1,elem2){
+    onChangeTri(elem1, elem2){// pour décidé commant tri par rapport aux éléments et à la direction
       this.rechercheRDV[elem1][elem2]=true
       setTimeout(() => {
         this.pagination()
       }, 1);
     },
-    onChangeNBPage(event){
-      this.limitPerPage = event
-      console.log(event)
+    onChangeNBPage(event){//modification de la limite du nombre d'élément par page de la pagination.
+      this.limitParPage = event
       setTimeout(() => {
         this.pagination()
       }, 1);
     },
+    /*******************/
+    /* fonction de tri */
+    /*******************/
     classerDateRdv(a, b) {
       let valdateA = a.date.split('/')
       let valheureA = a.heure.replace(/\:/gi, '')
@@ -339,37 +329,31 @@ export default {
       return testA - testB;
     },
     classerDateRdvInv(a, b) {
-      let valdateA = a.date.split('/')
-      let valheureA = a.heure.replace(/\:/gi, '')
-      let valdateB = b.date.split('/')
-      let valheureB = b.heure.replace(/\:/gi, '')
-      let testA =''+valdateA[2]+''+valdateA[1]+''+valdateA[0]+''+valheureA
-      let testB =''+valdateB[2]+''+valdateB[1]+''+valdateB[0]+''+valheureB
-      return testB - testA;
+      return this.classerDateRdv(b, a);
     },
     classerNiss(a, b) {
       return this.patientList[a.patient].Niss - this.patientList[b.patient].Niss;
     },
     classerNissInv(a, b) {
-      return this.patientList[b.patient].Niss - this.patientList[a.patient].Niss;
+      return this.classerNiss(b, a);
     },
     classerPoids(a, b) {
       return this.patientList[a.patient].Poids - this.patientList[b.patient].Poids;
     },
     classerPoidsInv(a, b) {
-      return this.patientList[b.patient].Poids - this.patientList[a.patient].Poids;
+      return this.classerPoids(b, a);
     },
     classerTaille(a, b) {
       return this.patientList[a.patient].Taille - this.patientList[b.patient].Taille;
     },
     classerTailleInv(a, b) {
-      return this.patientList[b.patient].Taille - this.patientList[a.patient].Taille;
+      return this.classerTaille(b, a);
     },
     classerIbm(a, b) {
       return (this.patientList[a.patient].Poids/((this.patientList[a.patient].Taille/100)*(this.patientList[a.patient].Taille/100))) - (this.patientList[b.patient].Poids/((this.patientList[b.patient].Taille/100)*(this.patientList[b.patient].Taille/100)));
     },
     classerIbmInv(a, b) {
-      return (this.patientList[b.patient].Poids/((this.patientList[b.patient].Taille/100)*(this.patientList[b.patient].Taille/100))) - (this.patientList[a.patient].Poids/((this.patientList[a.patient].Taille/100)*(this.patientList[a.patient].Taille/100)));
+      return this.classerIbm(b, a);
     },
     classerTel(a, b) {
       let nomA = this.patientList[a.patient].Telephone
@@ -380,26 +364,23 @@ export default {
           {return 1;}
     },
     classerTelInv(a, b) {
-      let nomA = this.patientList[a.patient].Telephone
-      let nomB = this.patientList[b.patient].Telephone
-        if (nomA > nomB)
-          {return -1;}
-        else (nomA < nomB )
-          {return 1;}
+      return this.classerTel(b, a);
     },
     classerDateN(a, b) {
-      let valdateA = a.date.split('/')
-      let valdateB = b.date.split('/')
-      let testA =''+valdateA[2]+''+valdateA[1]+''+valdateA[0]
-      let testB =''+valdateB[2]+''+valdateB[1]+''+valdateB[0]
-      return testA - testB;
-    },
-    classerDateNInv(a, b) {
       let valdateA = this.patientList[a.patient].DateN.split('/')
       let valdateB = this.patientList[b.patient].DateN.split('/')
       let testA =''+valdateA[2]+''+valdateA[1]+''+valdateA[0]
       let testB =''+valdateB[2]+''+valdateB[1]+''+valdateB[0]
-      return testB - testA;
+      if (testA < testB){
+        return 1;
+      } else if (testA > testB) {
+        return -1;
+      } else {
+        return 0;
+      }
+    },
+    classerDateNInv(a, b) {
+      return this.classerDateN(b, a);
     },
     classerSexe(a, b) {
       let nomA = this.patientList[a.patient].Sexe.toUpperCase()
@@ -410,12 +391,7 @@ export default {
           {return 1;}
     },
     classerSexeInv(a, b) {
-      let nomA = this.patientList[a.patient].Sexe.toUpperCase()
-      let nomB = this.patientList[b.patient].Sexe.toUpperCase()
-        if (nomA > nomB)
-          {return -1;}
-        else (nomA < nomB )
-          {return 1;}
+      return this.classerSexe(b, a);
     },
     classerExamen(a, b) {
       let nomA = a.examen.toUpperCase()
@@ -426,12 +402,7 @@ export default {
           {return 1;}
     },
     classerExamenInv(a, b) {
-      let nomA = a.examen.toUpperCase()
-      let nomB = b.examen.toUpperCase()
-        if (nomA > nomB)
-          {return -1;}
-        else (nomA < nomB )
-          {return 1;}
+      return this.classerExamen(b, a);
     },
     classerDiabete(a, b) {
       let nomA = this.patientList[a.patient].Diabete.toUpperCase()
@@ -489,7 +460,8 @@ export default {
         this.rechercheRDV[element]['memo']=''
       });
     },
-    rechercheRdv () {
+
+    rechercheRdv () {// recuperer les données de la recherche avec ou sans triage
       let rdvRecherche = []
       let triTab = ['rdv', 'nom', 'dateN', 'diabete', 'ibm', 'niss', 'poids', 'sexe', 'taille', 'tel', 'examen']
       let dateDR = (new Date(this.dateDebutR)).toLocaleDateString()
@@ -501,26 +473,24 @@ export default {
       let valDateFR = '' + testValDFR[2] + '' + testValDFR[1] + '' + testValDFR[0]
       let testValR = null
       let valDateR = null
-      if (this.checkedRecherche && this.memo < 1)
+      if (this.checkedRecherche && !this.rechercheRealiser)
       {
-        this.memo++
+        this.rechercheRealiser=true
         this.rdvList.forEach(element => {
           testValR = element.date.split('/')
           valDateR = '' + testValR[2] + '' + testValR[1] + '' + testValR[0]
           if (
-            ((!element.annule && !this.checkedA) || this.checkedA) && (this.patientR === element.patient || this.patientR === null) && ((this.dateNPR === null || this.dateNPR === '') || (dateN === this.patientList[element.patient].DateN)) && (((this.dateDebutR === null || dateDR === 'Invalid Date') && (this.dateFinR === null || dateFR === 'Invalid Date')) || ((this.dateDebutR === null || dateDR === 'Invalid Date') && dateDR === element.date) || (valDateDR <= valDateR && valDateFR >= valDateR) || ((this.dateFinR === null || dateFR === 'Invalid Date') && dateFR === element.date))) {
+            ((!element.annule && !this.checkedAnnulation) || this.checkedAnnulation) && (this.patientR === element.patient || this.patientR === null) && ((this.dateNPR === null || this.dateNPR === '') || (dateN === this.patientList[element.patient].DateN)) && (((this.dateDebutR === null || dateDR === 'Invalid Date') && (this.dateFinR === null || dateFR === 'Invalid Date')) || ((this.dateDebutR === null || dateDR === 'Invalid Date') && dateDR === element.date) || (valDateDR <= valDateR && valDateFR >= valDateR) || ((this.dateFinR === null || dateFR === 'Invalid Date') && dateFR === element.date))) {
             rdvRecherche.push(element)
           }
         })
-        this.items = rdvRecherche
-        // rdvRecherche.sort(this.classerNomPrenom)
-        console.log(this.rechercheRDV)
+        this.memoireRecherche = rdvRecherche
       } else {
-        rdvRecherche = this.items
-        // rdvRecherche.sort(this.classerNomPrenom)
+        rdvRecherche = this.memoireRecherche
         };
         triTab.forEach(element => {
-          if (this.rechercheRDV[element].asc==true && (this.rechercheRDV[element].memo==''||this.rechercheRDV[element].memo=='dsc')) {
+
+          if ((this.rechercheRDV[element].asc==true && (this.rechercheRDV[element].memo==''||this.rechercheRDV[element].memo=='dsc'))||(this.modificationModal && this.rechercheRDV[element].memo=='asc')) {
             this.restTabTri()
             if (element=='rdv'){
               rdvRecherche.sort(this.classerDateRdv)}
@@ -547,7 +517,7 @@ export default {
             this.rechercheRDV[element].memo='asc'
             this.rechercheRDV[element].asc=false
           }
-          if (this.rechercheRDV[element].dsc==true && (this.rechercheRDV[element].memo==''||this.rechercheRDV[element].memo=='asc')) {
+          if ((this.rechercheRDV[element].dsc==true && (this.rechercheRDV[element].memo==''||this.rechercheRDV[element].memo=='asc'))||(this.modificationModal && this.rechercheRDV[element].memo=='dsc')) {
             this.restTabTri()
             this.rechercheRDV[element].memo='dsc'
             this.rechercheRDV[element].dsc=false
@@ -575,79 +545,55 @@ export default {
               rdvRecherche.sort(this.classerTelInv)}
           }
       })
-        this.items = rdvRecherche
+        this.memoireRecherche = rdvRecherche
+        this.modificationModal=false
         return rdvRecherche
     },
-    dateDisabled (ymd, date) {
-      let check = false
-      const weekday = date.getDay()
-      const day = date.getDate()
-      const month = date.getMonth()
-      if ((weekday === 0) || (weekday === 6) || (month === 0 && day === 1) || (month === 4 && day === 1) || (month === 6 && day === 21) || (month === 7 && day === 15) || (month === 10 && day === 1) || (month === 10 && day === 11) || (month === 11 && day === 25) || (month === 6 && day === 11) || (month === 10 && day === 2) || (month === 10 && day === 15)) {
-        check = true
-      }
-      // Return `true` if the date should be disabled
-      return check
+    /**************************/
+    /* fonction pour le modal */
+    /**************************/
+    dateDisabled: fonction.dateDisabled,
+    showModal: fonction.showModal,
+    hideModal: fonction.hideModal,
+    traitementModal: fonction.TraitementModal,
+    openModal (elem) {// ouverture du modal
+      this.elementModal.rdvModalN = this.patientList[elem['patient']]['Nom'] + ' ' + this.patientList[elem['patient']]['Prenom']
+      this.elementModal.rdvModal = elem
+      this.elementModal.rdvModalId = elem.id
+      this.showModal()
     },
-    showModal (x) {
-      for (let index = 0; index < this.rdvList.length; index++) {
-        if (x.id === this.rdvList[index].id) {
-          this.keyM = index
-        }
+    fermetureModal () {// fermeture du modal
+      this.traitementModal(this.elementModal)
+      this.elemModale = {
+        rdvModalN: '',
+        rdvModal: {},
+        rdvModalId: ''
       }
-      this.rdvModalN = this.patientList[x['patient']]['Nom'] + ' ' + this.patientList[x['patient']]['Prenom']
-      this.rdvModal = x
-      this.rdvModalId = x.id
-      this.$refs['my-modal'].show()
+      this.modificationModal = true
+      this.hideModal()
     },
-    hideModal () {
-      let data = this.rdvModal
-      let dateM = new Date(data['date'])
-      let mdateM = '' + dateM.toLocaleDateString()
-      if (mdateM === 'Invalid Date') {
-        mdateM = data['date']
-      }
-      data.date = mdateM
-      mdateM = mdateM.replace(/\//gi, '')
-      let heureM = data['heure']
-      heureM = heureM.replace(':', '')
-      let childM = '' + data['hopital'] + '' + mdateM + '' + heureM + '' + data.patient
-      data.id = childM
-      if (childM === this.rdvModalId) {
-        this.$firebaseRefs.rdvList.child(this.rdvModalId).update(data)
-      } else {
-        this.$firebaseRefs.rdvList.child(this.rdvModalId).update({'annule': true})
-        this.$firebaseRefs.rdvList.child(childM).set(data)
-      }
-      setTimeout(() => {
-        this.$refs['my-modal'].hide()
-        this.rdvModal = {}
-        this.rdvModalId = ''
-        this.rdvModalN = ''
-      }, 1)
-    },
+    /*****************************/
+    /* fonction da la pagination */
+    /*****************************/
     pagination (){
-      var limitPerPage = this.limitPerPage
+      var limitParPage = this.limitParPage// limitParPage est le nombre élément que on affiche par page
       $(function(){
           $('.pagination').empty()
           $('.pagination').append('<li id="previous-page"><a class="page-link" href="#" aria-label="Prev"><span aria-hidden="true">Previous</span><span class="sr-only">Prev</span></a></li>')
-          /***Ne montrer que trois élément dans chaque onglet***/
-          var numberOfImages = $('.list-rdv').length;//crée une variable numberOfImages qui sélectionne l'élément avec la classe list-img dans l'élément avec l'id loop et conte les
-          console.log(limitPerPage);
+          /***Ne montrer que le nombre élément en fonction de la 'limitParPage' dans chaque onglet***/
+          var numberOfImages = $('.list-rdv').length;//crée une variable 'numberOfImages' qui sélectionne l'élément avec la classe 'list-rdv'
+
           $('.list-rdv').show();
-          $('.list-rdv:gt(' + (limitPerPage - 1) +')').hide();
+          $('.list-rdv:gt(' + (limitParPage - 1) +')').hide();
           //:gt() signifie que l'Éléments dont l'index est supérieur à (greater than) l'index spécifié
-          // limitPerPage est un tableau commençant par 0 donc renvois 4 éléments (dans ma var limitPerPage), pour laisser 3 élément on doit diminuer les élément afficher dans le tableau
 
           /***Partager les éléments par page***/
-          var totalPages = Math.ceil(numberOfImages / limitPerPage);// math.round() arrondi à l'entier le plus proche
-          console.log(totalPages);
+          var totalPages = Math.ceil(numberOfImages / limitParPage);// math.round() arrondi à l'entier le plus proche
           $('.pagination').append('<li class="current-page active page-item"><a class="page-link" href="#">' + 1 + '</a></li>'); // append() signifie qu'on insère du contenu à la fin de la sélection ;
 
           /***faire une boucle pour ajouter des paginations par à port aux nombres de pages besoin***/
           for (var i = 2; i <= totalPages; i++) {
             $('.pagination').append('<li class="current-page page-item"><a class="page-link" href="#">' + i + '</a></li>');
-            console.log(i);
           }
           $('.pagination').append('<li id="next-page"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">Next</span><span class="sr-only">Next</span></a></li>')
           $('.pagination li.current-page').on('click', function() {
@@ -655,16 +601,14 @@ export default {
               return false;
             } else {
               var currentPage = $(this).index();
-              console.log('Tu cliques sur ' + currentPage);
               $('.pagination li').removeClass('active');
               $(this).addClass('active');
               $('.list-rdv').hide();
-              var grandTotal = limitPerPage * currentPage;
-              for (var i = grandTotal - limitPerPage; i < grandTotal; i++) {
+              var grandTotal = limitParPage * currentPage;
+              for (var i = grandTotal - limitParPage; i < grandTotal; i++) {
                 $('.list-rdv:eq(' + i + ')').show();
               }
             }
-            console.log(currentPage)
           });
           $('#next-page').on('click', function() {
             var currentPage = $('.pagination li.active').index();
@@ -674,8 +618,8 @@ export default {
               currentPage++;
               $('.pagination li').removeClass('active');
               $('.list-rdv').hide();
-              var grandTotal = limitPerPage * currentPage;
-              for (var i = grandTotal - limitPerPage; i < grandTotal; i++) {
+              var grandTotal = limitParPage * currentPage;
+              for (var i = grandTotal - limitParPage; i < grandTotal; i++) {
                 $('.list-rdv:eq(' + i + ')').show();
               }
               $('.pagination li.current-page:eq(' + (currentPage - 1) + ')').addClass('active');
@@ -689,8 +633,8 @@ export default {
               currentPage--;
               $('.pagination li').removeClass('active');
               $('.list-rdv').hide();
-              var grandTotal = limitPerPage * currentPage;
-              for (var i = grandTotal - limitPerPage; i < grandTotal; i++) {
+              var grandTotal = limitParPage * currentPage;
+              for (var i = grandTotal - limitParPage; i < grandTotal; i++) {
                 $('.list-rdv:eq(' + i + ')').show();
               }
               $('.pagination li.current-page:eq(' + (currentPage - 1) + ')').addClass('active');
@@ -701,7 +645,6 @@ export default {
           (& empèche que quand tu cliques sur le lien cela remonte en haut)*/
           $('.page-link').on('click',function(e) {//Cette parti ce met à la fin car j'ai créé les boutton dans mon js
             e.preventDefault();
-            console.log('test');
           });
         });
     },
@@ -709,10 +652,10 @@ export default {
       this.checkedRecherche=true
       setTimeout(()=>{
         this.checkedRecherche=false
-        this.memo = 0
+        this.rechercheRealiser=false
         this.pagination()
       },1)
-      this.checkedRechercheV=true
+      this.voirRecherche=true
     },
   }
 }
@@ -731,7 +674,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: left;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 40px;
 }
 .colorH{color:#563d7c}
 .title{

@@ -1,14 +1,8 @@
 <template>
   <div>
     <b-navbar>
-      <b-navbar-nav>
-        <b-nav-item href="/#/" class="navColRed navColBR"><span class="navColText">Accueil</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCHU" class="navColRed "><span class="navColText">CHU</span></b-nav-item>
-        <b-nav-item href="/#/AgendaGHDC" class="navColRed "><span class="navColText">GHDC</span></b-nav-item>
-        <b-nav-item href="/#/AgendaCNDG" class="navColRed "><span class="navColText">CNDG</span></b-nav-item>
-        <b-nav-item href="/#/Recherche" class="navColRed "><span class="navColText">Recherche RDV</span></b-nav-item>
-        <b-nav-item href="/#/NewRdv" class="navColRed navColBL"><span class="navColText">Nouveau RDV</span></b-nav-item>
-      </b-navbar-nav>
+       <navBar>
+      </navBar>
     </b-navbar>
     <div id="content">
       <div>
@@ -49,7 +43,7 @@
           <b-col cols="6">
             <b-form-select v-model="newRdv['examen']">
               <b-form-select-option :value='null' disabled>Choisissez l'Examen</b-form-select-option>
-              <b-form-select-option v-for="elemEM in examenM" :key='elemEM.id' :value='elemEM'>{{elemEM}}</b-form-select-option>
+              <b-form-select-option v-for="elemEM in $listeData.examenM" :key='elemEM.id' :value='elemEM'>{{elemEM}}</b-form-select-option>
             </b-form-select>
           </b-col>
         </b-row>
@@ -58,7 +52,7 @@
           <b-col cols="6">
             <b-form-select v-model="newRdv['heure']">
               <b-form-select-option :value='null' disabled>Choisissez l'heure du Rdv</b-form-select-option>
-              <b-form-select-option v-for="elemRDV in heureRDV" :key='elemRDV.id' :value='elemRDV'>{{elemRDV}}</b-form-select-option>
+              <b-form-select-option v-for="elemRDV in $listeData.heureRDV" :key='elemRDV.id' :value='elemRDV'>{{elemRDV}}</b-form-select-option>
             </b-form-select>
           </b-col>
         </b-row>
@@ -67,7 +61,7 @@
           <b-col cols="6">
             <b-form-select v-model="newRdv['hopital']">
               <b-form-select-option :value='null' disabled>Choisissez l'Hôpital</b-form-select-option>
-              <b-form-select-option v-for="elemH in hopital" :key='elemH.id' :value='elemH'>{{elemH}}</b-form-select-option>
+              <b-form-select-option v-for="elemH in $listeData.hopital" :key='elemH.id' :value='elemH'>{{elemH}}</b-form-select-option>
             </b-form-select>
           </b-col>
         </b-row>
@@ -75,7 +69,7 @@
           <b-col cols="6">le Patient : </b-col>
           <b-col cols="6">
             <b-form-select v-model="newRdv['patient']">
-              <b-form-select-option :value='null' disabled>Choisissez le Patient</b-form-select-option>
+              <b-form-select-option value="" disabled>Choisissez le Patient</b-form-select-option>
               <b-form-select-option v-for="elemP in patientList" :key='elemP.id' :value='elemP.id'>{{elemP.Nom}} {{elemP.Prenom}}</b-form-select-option>
             </b-form-select>
           </b-col>
@@ -94,7 +88,7 @@
       <div v-if="checkPatient==='oui'">
         <b-row>
           <b-col>
-            <h1>Rdv :</h1>
+            <h1>Patient :</h1>
           </b-col>
         </b-row>
         <b-row>
@@ -183,19 +177,19 @@
         <div class="con-form">
           <ul>
             <li>
-              <span @click="redic('AgendaCHU')"
+              <span @click="redic('Agenda/CHU')"
                 >
                   CHU de Charleroi
               </span>
             </li>
             <li>
-              <span @click="redic('AgendaCHU')"
+              <span @click="redic('Agenda/GHDC')"
                 >
                 GHDC
               </span>
             </li>
             <li>
-            <span @click="redic('AgendaCHU')"
+            <span @click="redic('Agenda/CNDG')"
                 >
                   CNDG
               </span>
@@ -208,51 +202,27 @@
 </template>
 
 <script>
+import navBar from '@/components/navBar'
+import {dateDisabled as desativationDate} from '../js/fonction'
 export default {
+  components: {
+    navBar
+  },
   data () {
     return {
-      active: false,
-      input1: '',
-      input2: '',
-      checkbox1: false,
-      popupActive: false,
-      checkPatient: 'non',
-      keyList: ['RDV', 'Nom, prénom', 'Sexe', 'Date de naissance', 'Diabète', 'Poids', 'Taille', 'IBM', 'Examen', 'NISS', 'Téléphane'],
+      checkPatient: 'non', // c'est pour pouvoir crée un nouveau patient
       patientList: [],
       rdvList: [],
-      examenM: [// autre type examen medicale
-        'autre',
-        'radio',
-        'scanner',
-        'IRM'// ,
-        // 'autre + radio',
-        // 'autre + scanner',
-        // 'autre + IRM',
-        // 'radio + scanner',
-        // 'radio + IRM',
-        // 'scanner + IRM',
-        // 'autre + radio + scanner',
-        // 'autre + radio + IRM',
-        // 'autre + scanner + IRM',
-        // 'radio + scanner + IRM',
-        // 'autre + radio + scanner + IRM'
-      ],
-      heureRDV: [// plage horaire des Rdv
-        '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-        '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:30'],
-      dateJ: new Date(),
-      semaine: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
-      hopital: ['CHU', 'CNDG', 'GHDC'],
-      newRdv: {
+      newRdv: { // information du nouveau rendez-vous
         'date': '',
         'examen': null,
         'heure': null,
         'hopital': null,
-        'patient': null,
+        'patient': '',
         'urgent': 'n',
         'annule': false
       },
-      newPatient: {
+      newPatient: { // information du nouveau patient
         'DateN': '',
         'Diabete': 'n',
         'Niss': '',
@@ -263,7 +233,7 @@ export default {
         'Poids': '',
         'Telephone': '',
         'id': ''},
-      messageErreurNewRDV: ''
+      messageErreurNewRDV: '' // message pour manque d'information lord de la création du nouveau rendez-vous
     }
   },
   firebase () {
@@ -274,17 +244,7 @@ export default {
   },
 
   methods: {
-    dateDisabled (ymd, date) {
-      let check = false
-      const weekday = date.getDay()
-      const day = date.getDate()
-      const month = date.getMonth()
-      if ((weekday === 0) || (weekday === 6) || (month === 0 && day === 1) || (month === 4 && day === 1) || (month === 6 && day === 21) || (month === 7 && day === 15) || (month === 10 && day === 1) || (month === 10 && day === 11) || (month === 11 && day === 25) || (month === 6 && day === 11) || (month === 10 && day === 2) || (month === 10 && day === 15)) {
-        check = true
-      }
-      // Return `true` if the date should be disabled
-      return check
-    },
+    dateDisabled: desativationDate,
     redic: function (elem) {
       this.$refs['my-modal'].hide()
       setTimeout(function () {
@@ -293,7 +253,7 @@ export default {
     },
     addRdvList: function () {
       this.messageErreurNewRDV = ''
-      if ((this.newRdv['date'] !== '' && this.newRdv['heure'] !== null && this.newRdv['hopital'] !== null && this.newRdv['patient'] !== null && this.newRdv['examen'] !== null) && (this.checkPatient === 'non' || (this.checkPatient === 'oui' && this.newPatient['DateN'] !== '' && this.newPatient['Nom'] !== '' && this.newPatient['Prenom'] !== '' && this.newPatient['Sexe'] !== '' && this.newPatient['Niss'] !== '' && this.newPatient['Taille'] !== '' && this.newPatient['Poids'] !== ''))) {
+      if ((this.newRdv['date'] !== '' && this.newRdv['heure'] !== null && this.newRdv['hopital'] !== null && this.newRdv['examen'] !== null) && ((this.checkPatient === 'non' && this.newRdv['patient'] !== '') || (this.checkPatient === 'oui' && this.newPatient['DateN'] !== '' && this.newPatient['Nom'] !== '' && this.newPatient['Prenom'] !== '' && this.newPatient['Sexe'] !== '' && this.newPatient['Niss'] !== '' && this.newPatient['Taille'] !== '' && this.newPatient['Poids'] !== '' && this.newPatient['Telephone'] !== ''))) { // verification si ne manque pas d'information
         let dateR = new Date(this.newRdv['date'])
         let mdateR = dateR.toLocaleDateString()
         this.newRdv.date = mdateR
@@ -301,14 +261,14 @@ export default {
         let heureR = this.newRdv['heure']
         heureR = heureR.replace(':', '')
         let chid = '' + this.newRdv['hopital'] + '' + mdateR + '' + heureR
-        if (this.checkPatient === 'oui') {
+        if (this.checkPatient === 'oui') { // test si nouveau patient
           let dateP = new Date(this.newPatient.DateN)
           this.newPatient.DateN = dateP.toLocaleDateString()
           this.newPatient.id = this.patientList.length
           this.addPatientList()
           this.newRdv.patient = this.newPatient.id
         }
-        chid += this.newRdv.patient
+        chid += this.newRdv.patient // cle element pour la table Rdv de firebase
         this.newRdv.id = chid
         this.$firebaseRefs.rdvList.child(chid).set(this.newRdv)
         this.$refs['my-modal'].show()
@@ -336,7 +296,7 @@ export default {
         this.messageErreurNewRDV += '.'
       }
     },
-    addPatientList: function () {
+    addPatientList: function () { // fonction de création de nouveau patient dans la table patient de firebase
       this.$firebaseRefs.patientList.child(this.patientList.length).set(this.newPatient)
     }
   }
