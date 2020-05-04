@@ -4,7 +4,7 @@ import Vue from 'vue'
 // import firebase from 'firebase/app'
 import 'firebase/database'
 
-const firebaseConfig = initializeApp({
+const firebaseConfig = initializeApp({ // configuration de la connexion de FireBase pour avoir acces à la base de données
   apiKey: 'AIzaSyA7UFFCyweqUpUjSSl6qb-0CMBROFev4pQ',
   authDomain: 'projet-chu-53f94.firebaseapp.com',
   databaseURL: 'https://projet-chu-53f94.firebaseio.com',
@@ -16,8 +16,5 @@ const firebaseConfig = initializeApp({
 })
 
 const db = firebaseConfig.database()
-console.log(db)
+
 Vue.prototype.$db = db
-// export const db = firebaseConfig.database()
-// export const namesRefPatient = db.ref('Patient/')
-// export const namesRefRdv = db.ref('Rdv/')

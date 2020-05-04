@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Accueil from '@/components/Accueil'
-import AgendaCHU from '@/components/AgendaCHU'
+import AgendaJ from '@/components/AgendaJ'
+import AgendaS from '@/components/AgendaS'
+import AgendaM from '@/components/AgendaM'
 import NewRdv from '@/components/NewRdv'
+import Recherche from '@/components/Recherche'
 
 Vue.use(Router)
 
@@ -15,14 +17,28 @@ export default new Router({
       component: Accueil
     },
     {
-      path: '/test',
-      name: 'HelloWorld',
-      component: HelloWorld
+      path: '/Recherche',
+      name: 'Recherche',
+      component: Recherche,
+      props: true
     },
     {
-      path: '/AgendaCHU',
-      name: 'AgendaCHU',
-      component: AgendaCHU
+      path: '/Agenda/:hopital',
+      name: 'AgendaJ',
+      component: AgendaJ,
+      props: true
+    },
+    {
+      path: '/AgendaS/:hopital',
+      name: 'AgendaS',
+      component: AgendaS,
+      props: true
+    },
+    {
+      path: '/AgendaM/:hopital',
+      name: 'AgendaM',
+      component: AgendaM,
+      props: true
     },
     {
       path: '/NewRdv',
