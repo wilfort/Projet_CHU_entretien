@@ -33,7 +33,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 > [Explication du projet](Projet_technique-sélection_%20analyste_devloppeur_ISPPC.pdf)
 
-> [Document explicatif du projet](Projet%20entretient.docx)
+> [Document explicatif du projet](Projet%20entretient.pdf)
 
 > [Vidéo de la démonstration](demonstration%20application.mp4)
 
